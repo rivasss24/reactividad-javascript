@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
+    <!-- css styles -->
+    <link rel="stylesheet" href="style.css">
+    <title>Document</title>
+</head>
+<body>
+    <div class="number-container">
+        <p class="number" id="number">1</p>
+    </div>
+    <div class="buttons">
+        <button id="restar"> - </button>
+        <button id="sumar"> + </button>
+    </div>
+
+    <script>
+
+        const number = document.getElementById("number");
+        const sumar = document.getElementById("sumar");
+        const restar = document.getElementById("restar");
+
+        const types = {
+            sumar : "[OPERATION] add", 
+            restar: "[OPERATION] subtract"
+        }
+
+        const createStore = ( reducer, initialState ) => {
+
+            let state = initialState;
+            //actualizador
+            let updater = () => {}
+
+            const getState = () => {
+                return state
+            }
+
+            const dispatch = ( action ) => {
+                state = reducer( state , action );
+                updater();
+            }
+
+            const subscribe = ( listener ) => {
+                updater = listener
+            }
+
+            return {
+                getState,
+                dispatch,
+                subscribe
+            }
+        }
+        //el reducer recive el state & la action
+        const reducer = ( state, action ) => {
+            switch ( action ) {
+                case "[OPERATION] add":
+                    return state + 1
+                break;
+
+                case "[OPERATION] subtract":
+                    return state - 1
+                break;
+            
+                default:
+                    return state
+                break;
+            }
+        }
+                                          //initial state 
+        const store = createStore( reducer, 1 );
+
+
+        store.subscribe( () => {
+            //El get-state 
+            const state = store.getState();
+            number.innerHTML = state;
+        } );
+
+        //Al dispatch le enviaremos las diferentes accions  
+        sumar.onclick = () => store.dispatch(types.sumar);
+        restar.onclick = () => store.dispatch(types.restar);
+
+    </script>
+</body>
+</html>
